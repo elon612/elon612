@@ -1,0 +1,22 @@
+#!name=视频带宽批量测速
+#!desc=按过滤器/策略组低频抽样节点下载速度（Range），不是 generate_204 延迟。点插件或长按节点运行；定时默认关。
+#!author=elon612
+#!homepage=https://github.com/elon612/elon612/tree/main/loon
+#!icon=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Available.png
+#!system=iOS,iPadOS,macOS
+#!loon_version=3.2.1(733)
+#!tag=测速,视频,工具
+
+[Argument]
+policy = input,"ALL_Filter",tag=策略组/过滤器,desc=ALL_Filter / HK_Filter / SG_Filter / Available
+include = input,"香港|新加坡|泰国|日本|JMS|TX|AWS|HGC|IEPL",tag=名称包含(正则)
+exclude = input,"0.01x|0.3x|0.5x|剩余流量|套餐到期|官网|发布页|测试",tag=名称排除(正则)
+bytesMB = select,"4","2","8",tag=抽样大小(MB)
+maxNodes = select,"12","8","16","24",tag=最多测几个
+testTarget = select,"twitter","cloudflare","google",tag=测速目标
+cronOn = switch,false,tag=启用定时测速
+notifyAll = switch,true,tag=测完通知
+
+[Script]
+generic script-path=video_bandwidth.js,tag=视频带宽批量测速,timeout=300,img-url=speedometer.system,argument=[{policy},{include},{exclude},{bytesMB},{maxNodes},{testTarget},{notifyAll}]
+cron "0 13,21 * * *" script-path=video_bandwidth.js,tag=视频带宽定时测速,timeout=300,enable={cronOn},argument=[{policy},{include},{exclude},{bytesMB},{maxNodes},{testTarget},{notifyAll}]
